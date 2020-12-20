@@ -33,6 +33,7 @@ class Todo {
           <button class="todo-remove"></button>
           <button class="todo-complete"></button>
         </div>
+        <div></div>
     `);
 
     if (todo.completed) {
@@ -73,13 +74,34 @@ class Todo {
     this.todoData.forEach(item => {
       if (item.key === element.parentElement.key) {
         item.completed = !item.completed;
+        element.parentElement.style.opacity = '1';
       }
     });
     this.render();
   }
 
   editing(element) {
-    
+    element.parentElement.children[0].setAttribute('contenteditable', true);
+    element.parentElement.children[0].focus();
+    element.parentElement.children[0].addEventListener('blur', () => {
+      if (element.parentElement.children[0].textContent) {
+        this.todoData.forEach(item => {
+          if (item.key === element.parentElement.key) {
+            item.value = element.parentElement.children[0].textContent;
+          }
+        });
+        element.parentElement.children[0].removeAttribute('contenteditable');
+        this.render();
+      } else {
+        //========================Если необходимо запретить все действия при пустом элементе!===========================
+        // element.parentElement.lastElementChild.style.color = 'red';
+        // element.parentElement.lastElementChild.textContent = 'Введите текст!';
+        // element.parentElement.children[0].focus();
+        //========================Если необходимо удалить эдемент!======================================================
+        this.todoData.delete(element.parentElement.key);
+        this.render();
+      }
+    });
   }
 
   handler() {
