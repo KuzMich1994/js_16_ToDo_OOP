@@ -66,18 +66,39 @@ class Todo {
   }
 
   deleteItem(element) {
-    this.todoData.delete(element.parentElement.key);
-    this.render();
+    element.parentElement.style.transform = 'scale(0)';
+    let count = 0;
+    const animateDeleteItem = () => {
+      count += 0.05;
+      element.parentElement.style.transform = `scale(${count})`;
+      const animate = requestAnimationFrame(animateDeleteItem);
+      if (count > 1) {
+        cancelAnimationFrame(animate);
+        this.todoData.delete(element.parentElement.key);
+        this.render();
+      }
+    };
+    requestAnimationFrame(animateDeleteItem);
   }
 
   completedItem(element) {
-    this.todoData.forEach(item => {
-      if (item.key === element.parentElement.key) {
-        item.completed = !item.completed;
-        element.parentElement.style.opacity = '1';
+    element.parentElement.style.width = '100%';
+    let count = 100;
+    const animateCompletedItem = () => {
+      count += -4;
+      element.parentElement.style.width = `${count}%`;
+      const animate = requestAnimationFrame(animateCompletedItem);
+      if (count === 20) {
+        cancelAnimationFrame(animate);
+        this.todoData.forEach(item => {
+          if (item.key === element.parentElement.key) {
+            item.completed = !item.completed;
+          }
+        });
+        this.render();
       }
-    });
-    this.render();
+    };
+    requestAnimationFrame(animateCompletedItem);
   }
 
   editing(element) {
